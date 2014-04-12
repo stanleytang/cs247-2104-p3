@@ -177,6 +177,8 @@
           });
       };
       var snapchatTimer = $("#timer-input").val()*1000;
+      mediaRecorder.stop();
+      mediaRecorder.start(snapchatTimer);
       setInterval( function() {
         mediaRecorder.stop();
         mediaRecorder.start(snapchatTimer);
@@ -195,7 +197,7 @@
 
   // check to see if a message qualifies to be replaced with video.
   var has_emotions = function(msg){
-    var options = ["lol",":)",":("];
+    var options = ["lol",":)",":(", ";)", ":D", ":p", "omg", "rofl"];
     for(var i=0;i<options.length;i++){
       if(msg.indexOf(options[i])!= -1){
         return true;
