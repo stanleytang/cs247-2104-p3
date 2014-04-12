@@ -13,7 +13,7 @@
 
   function connect_to_chat_firebase(){
     /* Include your Firebase link here!*/
-    fb_instance = new Firebase("https://gsroth-p3-v1.firebaseio.com");
+    fb_instance = new Firebase("https://cs247p3stanley.firebaseio.com");
 
     // generate new chatroom id or use existing id
     var url_segments = document.location.href.split("/#");
@@ -50,7 +50,7 @@
     $("#submission input").keydown(function( event ) {
       if (event.which == 13) {
         if(has_emotions($(this).val())){
-          fb_instance_stream.push({m:username+": " +$(this).val(), v:cur_video_blob, c: my_color});
+          fb_instance_stream.push({username: username, m:username+": " +$(this).val(), v:cur_video_blob, c: my_color, timer: $("#timer-input").val()});
         }else{
           fb_instance_stream.push({m:username+": " +$(this).val(), c: my_color});
         }
@@ -61,14 +61,18 @@
 
   // creates a message node and appends it to the conversation
   function display_msg(data){
-    $("#conversation").append("<div class='msg' style='color:"+data.c+"'>"+data.m+"</div>");
+    var message = $("<div class='msg' style='color:"+data.c+"'></div>");
     if(data.v){
+      message.append("<p style='margin:0'>"+data.username+":</p>");
+      message.addClass("video-msg");
+      message.append("<div class='timer'>"+data.timer+"</div>");
+
       // for video element
       var video = document.createElement("video");
-      video.autoplay = true;
+      video.autoplay = false;
       video.controls = false; // optional
-      video.loop = true;
-      video.width = 120;
+      video.loop = false;
+      video.width = 150;
 
       var source = document.createElement("source");
       source.src =  URL.createObjectURL(base64_to_blob(data.v));
@@ -80,8 +84,35 @@
       // var video = document.createElement("img");
       // video.src = URL.createObjectURL(base64_to_blob(data.v));
 
-      document.getElementById("conversation").appendChild(video);
+      message.append(video);
+
+      $(video).click(function() {
+        video.play();
+
+        var count=data.timer;
+
+        var counter=setInterval(timer, 1000); //1000 will  run it every 1 second
+
+        function timer() {
+          count=count-1;
+          if (count <= 0) {
+             clearInterval(counter);
+             //counter ended, do something here
+             return;
+          }
+          message.find(".timer").html(count);
+        }
+        setTimeout(function() {
+          message.html(data.m);
+        }, data.timer * 1000)
+      });
+
+    } else {
+      message.append(data.m);
     }
+
+    $("#conversation").append(message);
+
     // Scroll to the bottom every time we display a new message
     scroll_to_bottom(0);
   }
@@ -145,10 +176,11 @@
             cur_video_blob = b64_data;
           });
       };
+      var snapchatTimer = $("#timer-input").val()*1000;
       setInterval( function() {
         mediaRecorder.stop();
-        mediaRecorder.start(3000);
-      }, 3000 );
+        mediaRecorder.start(snapchatTimer);
+      }, snapchatTimer);
       console.log("connect to media stream!");
     }
 
