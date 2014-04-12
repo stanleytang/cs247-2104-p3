@@ -14,8 +14,24 @@ a {
 #timer-input {
   width: 45px;
 }
-.video-msg .play {
-  background-image: url('../video-play.button.png');
+.video-msg .pre-play {
+  background-image: url('video-play-button.png');
+  position: absolute;
+  height: 112px;
+  width: 150px;
+  background-repeat: no-repeat;
+  background-position: 50%;
+  background-size: 50%;
+}
+.video-msg .pre-play-dim {
+  background-color: black;
+  opacity: 0.4;
+  position: absolute;
+  height: 112px;
+  width: 150px;
+}
+.video-msg .pre-play-container:hover .pre-play-dim {
+  visibility: hidden;
 }
 .video-msg {
   cursor: pointer;

@@ -66,6 +66,10 @@
       message.append("<p style='margin:0'>"+data.username+":</p>");
       message.addClass("video-msg");
       message.append("<div class='timer'>"+data.timer+"</div>");
+      message.append("<div class='pre-play-container'>");
+      message.find(".pre-play-container")
+        .append("<div class='pre-play'>")
+        .append("<div class='pre-play-dim'>");
 
       // for video element
       var video = document.createElement("video");
@@ -86,12 +90,13 @@
 
       message.append(video);
 
-      $(video).click(function() {
+      message.find(".pre-play-container").click(function() {
+        message.find(".pre-play-container").remove();
         video.play();
 
-        var count=data.timer;
+        var count = data.timer;
 
-        var counter=setInterval(timer, 1000); //1000 will  run it every 1 second
+        var counter = setInterval(timer, 1000); //1000 will  run it every 1 second
 
         function timer() {
           count=count-1;
